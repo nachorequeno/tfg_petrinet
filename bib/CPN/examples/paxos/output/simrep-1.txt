@@ -1,0 +1,15 @@
+CPN Tools simulation report for:
+/cygdrive/H/Mi unidad/TFG/tfg_autoadaptativo/bib/CPN/example/paxos/singlePaxos.cpn
+Report generated: Wed Jan 12 13:39:45 2022
+
+1	0	Obtain_candidates_IDs @ (1:LeaderDetector)
+2	0	Obtain_candidates_IDs @ (1:LeaderDetector)
+3	0	Obtain_candidates_IDs @ (1:LeaderDetector)
+4	0	Elect_Leader @ (1:LeaderDetector)
+5	0	Store_Leader_ID @ (1:InitProposer)
+6	0	Elect_Leader @ (1:LeaderDetector)
+7	0	Elect_Leader @ (1:LeaderDetector)
+8	0	Store_Leader_ID @ (1:InitProposer)
+9	0	Update_ServerIDs @ (1:LeaderDetector)
+10	0	Update_ServerIDs @ (1:LeaderDetector)
+11	0	Update_ServerIDs @ (1:LeaderDetector)

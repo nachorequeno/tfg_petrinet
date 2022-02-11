@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<purchase:System
+    xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:purchase="purchase"
+    xsi:schemaLocation="purchase ../purchase.ecore">
+  <orders billTo="Juan"
+      shipTo="UAM">
+    <items productName="Keyboard"
+        quantity="2"
+        price="45.0"/>
+    <items productName="Mouse"
+        quantity="4"
+        price="15.0"/>
+  </orders>
+  <orders billTo="Esther"
+      shipTo="Home">
+    <items productName="Keyboard"
+        quantity="4"
+        price="45.0"/>
+  </orders>
+  <orders billTo="Elena"
+      shipTo="Office">
+    <items productName="Mouse"
+        quantity="10"
+        price="15.0"/>
+    <items xsi:type="purchase:DiscountedItem"
+        productName="Laptop"
+        quantity="1"
+        price="1250.0"
+        discount="25.0"/>
+  </orders>
+</purchase:System>

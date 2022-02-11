@@ -1,0 +1,12 @@
+Crear ejemplo de prueba
+-----------------------
+1- Intercambio de PN
+1.0 Definición de PNPL <-> API <-> CPNTools (Elena)
+1.1 Gestión de tiempos en la PN a través de CPNTools y posterior migración a PNPL
+
+2- Instrumentalización de la PN para enchufarle TeSSLa (definir inputs y outputs) (Nacho)
+
+3- Crear DSL (si se puede) para el intercambio con la librería (Elena)
+
+4- Diagrama de actividad con el workflow para el análisis + monitorización (Nacho)
+4.1 Interfaz gráfica (¿?)
