@@ -1,0 +1,9 @@
+in e1: Events[Unit]
+in e2: Events[Unit]
+in t1: Events[Unit]
+in t2: Events[Unit]
+
+def eating_time_f1 = on(e1, default(time(e1) - time(t1), 0))
+def eating_time_f2 = on(e2, default(time(e2) - time(t2), 0))
+out eating_time_f1
+out eating_time_f2
