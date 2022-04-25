@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-10">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="D:/git_projects/tfg_petrinet/src/accescpn-2.2.x/plugins/org.cpntools.accesscpn.cosimulation_2.2.0.jar"/>
+	<classpathentry kind="lib" path="D:/git_projects/tfg_petrinet/src/accescpn-2.2.x/plugins/org.cpntools.accesscpn.engine.highlevel_4.0.6.jar"/>
+	<classpathentry kind="lib" path="D:/git_projects/tfg_petrinet/src/accescpn-2.2.x/plugins/org.cpntools.accesscpn.engine.protocol_4.0.0.jar"/>
+	<classpathentry kind="lib" path="D:/git_projects/tfg_petrinet/src/accescpn-2.2.x/plugins/org.cpntools.accesscpn.engine.proxy_2.2.0.jar"/>
+	<classpathentry kind="lib" path="D:/git_projects/tfg_petrinet/src/accescpn-2.2.x/plugins/org.cpntools.accesscpn.engine_3.0.0.jar"/>
+	<classpathentry kind="lib" path="D:/git_projects/tfg_petrinet/src/accescpn-2.2.x/plugins/org.cpntools.accesscpn.model.exporter_2.2.1.jar"/>
+	<classpathentry kind="lib" path="D:/git_projects/tfg_petrinet/src/accescpn-2.2.x/plugins/org.cpntools.accesscpn.model.importer_4.0.0.jar"/>
+	<classpathentry kind="lib" path="D:/git_projects/tfg_petrinet/src/accescpn-2.2.x/plugins/org.cpntools.accesscpn.model.tests_2.2.0.jar"/>
+	<classpathentry kind="lib" path="D:/git_projects/tfg_petrinet/src/accescpn-2.2.x/plugins/org.cpntools.accesscpn.model_4.0.0.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
