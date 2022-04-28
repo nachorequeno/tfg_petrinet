@@ -94,8 +94,8 @@
         </block>
         <block id="ID1413113462">
           <id>CONSTANTS</id>
-          <ml id="ID1413119634">val delay = 0;
-            <layout>val delay = 0;</layout>
+          <ml id="ID1413119634">val delay = 1;
+            <layout>val delay = 1;</layout>
           </ml>
           <ml id="ID1413113727">val initial = 1;
             <layout>val initial = 1;</layout>
@@ -290,7 +290,7 @@
                 anchor.vertical="0"/>
         </marking>
         <type id="PL_T_f1">
-          <posattr x="-34.500000"
+          <posattr x="-45.000000"
                    y="10.000000"/>
           <fillattr colour="White"
                     pattern="Solid"
@@ -301,7 +301,7 @@
           <textattr colour="Black"
                     bold="false"/>
           <text tool="CPN Tools"
-                version="4.0.1">INT</text>
+                version="4.0.1">TOKEN</text>
         </type>
         <initmark id="PL_M_f1">
           <posattr x="28.000000"
@@ -342,7 +342,7 @@
                 anchor.vertical="0"/>
         </marking>
         <type id="PL_T_f2">
-          <posattr x="636.500000"
+          <posattr x="626.000000"
                    y="27.000000"/>
           <fillattr colour="White"
                     pattern="Solid"
@@ -353,7 +353,7 @@
           <textattr colour="Black"
                     bold="false"/>
           <text tool="CPN Tools"
-                version="4.0.1">INT</text>
+                version="4.0.1">TOKEN</text>
         </type>
         <initmark id="PL_M_f2">
           <posattr x="700.000000"
@@ -980,8 +980,8 @@
                 version="4.0.1"/>
         </cond>
         <time id="TR_T_release1">
-          <posattr x="402.500000"
-                   y="175.000000"/>
+          <posattr x="340.000000"
+                   y="125.000000"/>
           <fillattr colour="White"
                     pattern="Solid"
                     filled="false"/>
@@ -991,7 +991,7 @@
           <textattr colour="Black"
                     bold="false"/>
           <text tool="CPN Tools"
-                version="4.0.1"/>
+                version="4.0.1">@+delay</text>
         </time>
         <code id="TR_S_release1">
           <posattr x="422.500000"
@@ -1054,8 +1054,8 @@
                 version="4.0.1">[#FEAT_TwoP c]</text>
         </cond>
         <time id="ID1593401777">
-          <posattr x="415.500000"
-                   y="-40.000000"/>
+          <posattr x="350.000000"
+                   y="-30.000000"/>
           <fillattr colour="White"
                     pattern="Solid"
                     filled="false"/>
@@ -1065,7 +1065,7 @@
           <textattr colour="Fucia"
                     bold="false"/>
           <text tool="CPN Tools"
-                version="4.0.1"/>
+                version="4.0.1">@+delay</text>
         </time>
         <code id="ID1593401778">
           <posattr x="435.500000"
@@ -1127,16 +1127,16 @@
           <text tool="CPN Tools"
                 version="4.0.1">[#FEAT_TwoP c]</text>
         </cond>
-        <time id="ID1593401984">
+        <time id="ID1593707542">
           <posattr x="415.500000"
                    y="-313.000000"/>
           <fillattr colour="White"
                     pattern="Solid"
                     filled="false"/>
-          <lineattr colour="Fucia"
+          <lineattr colour="Black"
                     thick="0"
                     type="Solid"/>
-          <textattr colour="Fucia"
+          <textattr colour="Black"
                     bold="false"/>
           <text tool="CPN Tools"
                 version="4.0.1"/>
@@ -1513,7 +1513,7 @@
           <textattr colour="Black"
                     bold="false"/>
           <text tool="CPN Tools"
-                version="4.0.1">t @+delay</text>
+                version="4.0.1">t</text>
         </annot>
       </arc>
       <arc id="ARC_a18"
@@ -1579,7 +1579,7 @@
         <transend idref="TR_release1"/>
         <placeend idref="PL_f1"/>
         <annot id="ANN_a19">
-          <posattr x="166.000000"
+          <posattr x="167.500000"
                    y="107.000000"/>
           <fillattr colour="White"
                     pattern="Solid"
@@ -1590,7 +1590,7 @@
           <textattr colour="Black"
                     bold="false"/>
           <text tool="CPN Tools"
-                version="4.0.1">1</text>
+                version="4.0.1">t</text>
         </annot>
       </arc>
       <arc id="ID1593406879"
@@ -1834,7 +1834,7 @@
           <textattr colour="Fucia"
                     bold="false"/>
           <text tool="CPN Tools"
-                version="4.0.1">(if (#FEAT_TwoP c) then 1`t else 0`t)@+delay</text>
+                version="4.0.1">(if (#FEAT_TwoP c) then 1`t else 0`t)</text>
         </annot>
       </arc>
       <arc id="ID1593420883"
@@ -1845,28 +1845,28 @@
         <fillattr colour="White"
                   pattern=""
                   filled="false"/>
-        <lineattr colour="Fucia"
+        <lineattr colour="Black"
                   thick="1"
                   type="Solid"/>
-        <textattr colour="Fucia"
+        <textattr colour="Black"
                   bold="false"/>
         <arrowattr headsize="1.200000"
                    currentcyckle="2"/>
         <transend idref="ID1593401775"/>
         <placeend idref="PL_f2"/>
         <annot id="ID1593420884">
-          <posattr x="550.000000"
+          <posattr x="551.500000"
                    y="41.000000"/>
           <fillattr colour="White"
                     pattern="Solid"
                     filled="false"/>
-          <lineattr colour="Fucia"
+          <lineattr colour="Black"
                     thick="0"
                     type="Solid"/>
-          <textattr colour="Fucia"
+          <textattr colour="Black"
                     bold="false"/>
           <text tool="CPN Tools"
-                version="4.0.1">1</text>
+                version="4.0.1">t</text>
         </annot>
       </arc>
       <arc id="ID1593441133"
@@ -2316,7 +2316,7 @@
         <transend idref="TR_release1"/>
         <placeend idref="PL_f2"/>
         <annot id="ID1593696890">
-          <posattr x="530.000000"
+          <posattr x="528.500000"
                    y="110.000000"/>
           <fillattr colour="White"
                     pattern="Solid"
@@ -2327,7 +2327,7 @@
           <textattr colour="Black"
                     bold="false"/>
           <text tool="CPN Tools"
-                version="4.0.1">1</text>
+                version="4.0.1">t</text>
         </annot>
       </arc>
       <arc id="ID1593701210"
@@ -2348,7 +2348,7 @@
         <transend idref="ID1593401775"/>
         <placeend idref="PL_f1"/>
         <annot id="ID1593701211">
-          <posattr x="167.000000"
+          <posattr x="165.500000"
                    y="4.000000"/>
           <fillattr colour="White"
                     pattern="Solid"
@@ -2359,7 +2359,7 @@
           <textattr colour="Black"
                     bold="false"/>
           <text tool="CPN Tools"
-                version="4.0.1">1</text>
+                version="4.0.1">t</text>
         </annot>
       </arc>
       <constraints/>
@@ -2437,12 +2437,13 @@
         <group_elm idref="ID1593411570"/>
         <group_elm idref="ID1593411571"/>
         <group_elm idref="ID1593418749"/>
+        <group_elm idref="ID1593699898"/>
+        <group_elm idref="ID1593699766"/>
         <group_elm idref="ID1593418750"/>
         <group_elm idref="ID1593407470"/>
+        <group_elm idref="ID1593703739"/>
         <group_elm idref="ID1593407471"/>
         <group_elm idref="ID1593420884"/>
-        <group_elm idref="ID1593471894"/>
-        <group_elm idref="ID1593471183"/>
         <group_elm idref="ID1593420883"/>
       </group>
     </page>
