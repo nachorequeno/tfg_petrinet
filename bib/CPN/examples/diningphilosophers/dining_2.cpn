@@ -638,8 +638,8 @@
                 version="4.0.1"/>
         </code>
         <priority id="TR_P_switch_TwoP">
-          <posattr x="-1557.000000"
-                   y="193.000000"/>
+          <posattr x="-1546.000000"
+                   y="225.000000"/>
           <fillattr colour="White"
                     pattern="Solid"
                     filled="false"/>
@@ -649,7 +649,7 @@
           <textattr colour="Black"
                     bold="false"/>
           <text tool="CPN Tools"
-                version="4.0.1"/>
+                version="4.0.1">P_LOW</text>
         </priority>
       </trans>
       <trans id="TR_switch_FourP"
@@ -712,7 +712,7 @@
                 version="4.0.1"/>
         </code>
         <priority id="TR_P_switch_FourP">
-          <posattr x="-1560.000000"
+          <posattr x="-1549.000000"
                    y="-54.000000"/>
           <fillattr colour="White"
                     pattern="Solid"
@@ -723,7 +723,7 @@
           <textattr colour="Black"
                     bold="false"/>
           <text tool="CPN Tools"
-                version="4.0.1"/>
+                version="4.0.1">P_LOW</text>
         </priority>
       </trans>
       <trans id="TR_switch_ThreeP"
@@ -786,7 +786,7 @@
                 version="4.0.1"/>
         </code>
         <priority id="TR_P_switch_ThreeP">
-          <posattr x="-1559.000000"
+          <posattr x="-1548.000000"
                    y="68.000000"/>
           <fillattr colour="White"
                     pattern="Solid"
@@ -797,7 +797,7 @@
           <textattr colour="Black"
                     bold="false"/>
           <text tool="CPN Tools"
-                version="4.0.1"/>
+                version="4.0.1">P_LOW</text>
         </priority>
       </trans>
       <trans id="TR_isValid"
@@ -860,8 +860,8 @@
                 version="4.0.1"/>
         </code>
         <priority id="TR_P_isValid">
-          <posattr x="-1337.000000"
-                   y="-91.000000"/>
+          <posattr x="-1326.000000"
+                   y="-59.000000"/>
           <fillattr colour="White"
                     pattern="Solid"
                     filled="false"/>
@@ -871,7 +871,7 @@
           <textattr colour="Black"
                     bold="false"/>
           <text tool="CPN Tools"
-                version="4.0.1"/>
+                version="4.0.1">P_LOW</text>
         </priority>
       </trans>
       <trans id="TR_get1"
@@ -934,7 +934,7 @@
                 version="4.0.1"/>
         </code>
         <priority id="TR_P_get1">
-          <posattr x="254.000000"
+          <posattr x="264.000000"
                    y="342.000000"/>
           <fillattr colour="White"
                     pattern="Solid"
@@ -945,7 +945,7 @@
           <textattr colour="Black"
                     bold="false"/>
           <text tool="CPN Tools"
-                version="4.0.1"/>
+                version="4.0.1">P_HIGH</text>
         </priority>
       </trans>
       <trans id="TR_release1"
@@ -1007,7 +1007,7 @@
           <text tool="CPN Tools"
                 version="4.0.1"/>
         </code>
-        <priority id="TR_P_release1">
+        <priority id="ID1593708494">
           <posattr x="254.000000"
                    y="125.000000"/>
           <fillattr colour="White"
@@ -1081,16 +1081,16 @@
           <text tool="CPN Tools"
                 version="4.0.1"/>
         </code>
-        <priority id="ID1593401780">
+        <priority id="ID1593708540">
           <posattr x="267.000000"
                    y="-90.000000"/>
           <fillattr colour="White"
                     pattern="Solid"
                     filled="false"/>
-          <lineattr colour="Fucia"
+          <lineattr colour="Black"
                     thick="0"
                     type="Solid"/>
-          <textattr colour="Fucia"
+          <textattr colour="Black"
                     bold="false"/>
           <text tool="CPN Tools"
                 version="4.0.1"/>
@@ -1156,7 +1156,7 @@
                 version="4.0.1"/>
         </code>
         <priority id="ID1593401987">
-          <posattr x="267.000000"
+          <posattr x="277.000000"
                    y="-363.000000"/>
           <fillattr colour="White"
                     pattern="Solid"
@@ -1167,7 +1167,7 @@
           <textattr colour="Fucia"
                     bold="false"/>
           <text tool="CPN Tools"
-                version="4.0.1"/>
+                version="4.0.1">P_HIGH</text>
         </priority>
       </trans>
       <arc id="ARC_PTARC_SWITCH_TwoP"
@@ -2419,7 +2419,6 @@
         <group_elm idref="ID1593399201"/>
         <group_elm idref="ID1593401775"/>
         <group_elm idref="ID1593401778"/>
-        <group_elm idref="ID1593401780"/>
         <group_elm idref="ID1593401776"/>
         <group_elm idref="ID1593401777"/>
         <group_elm idref="ID1593418062"/>
@@ -2428,7 +2427,6 @@
         <group_elm idref="ID1593401985"/>
         <group_elm idref="ID1593401987"/>
         <group_elm idref="ID1593401983"/>
-        <group_elm idref="ID1593401984"/>
         <group_elm idref="ID1593412131"/>
         <group_elm idref="ID1593412132"/>
         <group_elm idref="ID1593399719"/>
@@ -2472,17 +2470,12 @@
           <text>&quot;&lt;same as model&gt;&quot;</text>
         </value>
       </option>
-      <option name="extensions.10005.enable">
-        <value>
-          <boolean>true</boolean>
-        </value>
-      </option>
       <option name="extensions.10001.enable">
         <value>
           <boolean>true</boolean>
         </value>
       </option>
-      <option name="extensions.10003.enable">
+      <option name="extensions.10006.enable">
         <value>
           <boolean>true</boolean>
         </value>
@@ -2492,9 +2485,44 @@
           <boolean>true</boolean>
         </value>
       </option>
-      <option name="extensions.10006.enable">
+      <option name="extensions.10007.enable">
         <value>
           <boolean>true</boolean>
+        </value>
+      </option>
+      <option name="extensions.10003.enable">
+        <value>
+          <boolean>true</boolean>
+        </value>
+      </option>
+      <option name="extensions.10004.enable">
+        <value>
+          <boolean>true</boolean>
+        </value>
+      </option>
+      <option name="extensions.10005.enable">
+        <value>
+          <boolean>true</boolean>
+        </value>
+      </option>
+      <option name="extensions.10011.enable">
+        <value>
+          <boolean>true</boolean>
+        </value>
+      </option>
+      <option name="extensions.10008.enable">
+        <value>
+          <boolean>true</boolean>
+        </value>
+      </option>
+      <option name="extensions.10007.options.discover">
+        <value>
+          <boolean>false</boolean>
+        </value>
+      </option>
+      <option name="extensions.10011.options.disable">
+        <value>
+          <boolean>false</boolean>
         </value>
       </option>
       <option name="repavg">
@@ -2697,12 +2725,12 @@
       <cpnbinder id="ID1593331878"
                  x="267"
                  y="41"
-                 width="1644"
-                 height="942">
+                 width="1531"
+                 height="771">
         <sheets>
           <cpnsheet id="ID2215"
-                    panx="-317.256128"
-                    pany="25.240398"
+                    panx="-204.256128"
+                    pany="-16.759602"
                     zoom="0.805664"
                     instance="ID2149">
             <zorder>
@@ -2781,11 +2809,19 @@
           <IndexNode expanded="false"/>
           <IndexNode expanded="false"/>
           <IndexNode expanded="false"/>
+          <IndexNode expanded="false"/>
+          <IndexNode expanded="false"/>
+          <IndexNode expanded="false"/>
+          <IndexNode expanded="false"/>
+        </IndexNode>
+        <IndexNode expanded="false">
+          <IndexNode expanded="false"/>
+        </IndexNode>
+        <IndexNode expanded="false">
+          <IndexNode expanded="false"/>
         </IndexNode>
       </IndexNode>
-      <IndexNode expanded="false">
-        <IndexNode expanded="false"/>
-      </IndexNode>
+      <IndexNode expanded="false"/>
       <IndexNode expanded="true">
         <IndexNode expanded="false">
           <IndexNode expanded="false"/>
