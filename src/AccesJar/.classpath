@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="lib"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="module" value="true"/>
@@ -161,5 +162,11 @@
 	<classpathentry kind="lib" path="lib/org.eclipse.xsd.mapping.source_2.8.0.v20180706-1143.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.xsd.source_2.18.0.v20220616-0915.jar"/>
 	<classpathentry kind="lib" path="lib/tessla-assembly-1.2.3.jar"/>
+	<classpathentry kind="lib" path="lib/j2html-1.6.0.jar"/>
+	<classpathentry kind="lib" path="lib/graal-sdk-21.3.3.jar"/>
+	<classpathentry kind="lib" path="lib/icu4j-71.1.jar"/>
+	<classpathentry kind="lib" path="lib/js-21.3.3.jar"/>
+	<classpathentry kind="lib" path="lib/regex-21.3.3.jar"/>
+	<classpathentry kind="lib" path="lib/truffle-api-21.3.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
