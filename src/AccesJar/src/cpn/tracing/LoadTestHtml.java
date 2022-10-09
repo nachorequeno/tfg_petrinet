@@ -6,10 +6,15 @@ import static j2html.TagCreator.h1;
 import static j2html.TagCreator.head;
 import static j2html.TagCreator.html;
 import static j2html.TagCreator.link;
+import static j2html.TagCreator.img;
 import static j2html.TagCreator.main;
 import static j2html.TagCreator.script;
 import static j2html.TagCreator.title;
+
+import j2html.tags.ContainerTag;
+import j2html.tags.attributes.IContent;
 import j2html.tags.specialized.HtmlTag;
+import jdk.javadoc.internal.doclets.formats.html.markup.Script;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -57,6 +62,7 @@ import de.uni_luebeck.isp.tessla.interpreter.StreamEngine.Stream;
 
 import scala.Tuple3;
 import scala.collection.immutable.Map;
+import scala.tools.nsc.doc.html.HtmlTags.Svg;
 import scala.Option;
 
 class TesslaEvent {
@@ -74,23 +80,28 @@ class TesslaStream {
     Object text; /* ((e: TesslaEvent) => string) | null; */
 }
 
-public class LoadTest {
+public class LoadTestHtml {
 
 	private static int maxTimeStamp = 0;
 
-    static HashMap<String, Vector<TesslaEvent>> streams = null;
-    
+    static HashMap<String, Vector<TesslaEvent>> streams = new HashMap<String, Vector<TesslaEvent>>();
+    static EngineListener eng_listener = null;
+	static Engine res;
+
 	public static void main(final String[] args) throws Exception {
-		//final JFileChooser chooser = new JFileChooser();
-		//if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-			/* List<Marking> list = simulate(chooser.getSelectedFile());
-			callTessla(list); */
-			LoadTest ld = new LoadTest();
-			ld.printFactories();
-			String string_streams = ld.invokeJavascriptTesslaGraal();
+		final JFileChooser chooser = new JFileChooser();
+		if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+			List<Marking> list = simulate(chooser.getSelectedFile());
+			//callTessla(list);
+			//LoadTestHtml ld = new LoadTestHtml();
+			//ld.printFactories();
+			//streams.put("hola", new Vector<TesslaEvent>(10));
+			//String string_streams = ld.invokeJavascriptTesslaGraal();
+			//String string_streams = ld.Streams2JavaScriptText(streams);
+			String string_streams = Streams2JavaScriptText(streams);
 			HtmlTag out = toHTML("Hola!", string_streams);
-			System.out.println(out.toString());
-		//}
+			System.out.println(out.renderFormatted());
+		}
 
 	}
 
@@ -146,8 +157,20 @@ public class LoadTest {
 			}
 			System.out.println("Done");
 
-			s.execute(10);
-			List<Marking> list = s.getMarking().getAllMarkings();
+			/* s.execute(50);
+			List<Marking> list = s.getMarking().getAllMarkings(); */
+			Engine res = generateTesslaEngine();
+
+			List<Marking> list = null;
+			for (int i = 1; i <= 50; i++) {
+
+				s.execute(i);
+				list = s.getMarking().getAllMarkings();
+				executeTessla(list, res);
+			}
+
+			res.step();
+			
 			return list;
 
 		} finally {
@@ -156,26 +179,28 @@ public class LoadTest {
 	}
 	
 	private static void callTessla(List<Marking> list) throws Exception {
-		Engine res = generateTesslaEngine();
+		res = generateTesslaEngine();
 		executeTessla(list, res);
 		res.step();
 	}
 
 	public static HtmlTag toHTML(String title, String string_streams) throws NoSuchMethodException, ScriptException, IOException, URISyntaxException {
+		ContainerTag ct = new ContainerTag("svg");
+		ct.withId("container").withStyle("width:800px;");
 		HtmlTag out = html(
 				    head(
 				        title(title),
 				        link().withRel("stylesheet").withHref("/css/main.css")
 				    ),
 				    body(
-				    	j2html.TagCreator.main(attrs("#main.content"),
-				            h1("Heading!"),
-				            script("d3.js"),
-				            script("tessla-visualizer.js"),
-				            script(string_streams)
-				        )
+				         h1(title),
+				         //img().withId("container").withStyle("width:800px;"),
+				         ct,
+				         script().withSrc("d3.js"),
+				         script().withSrc("tessla-visualizer.js"),
+				         script(string_streams)
 				    )
-			);
+			).withLang("en");
 		return out;
 	}
 	
@@ -225,6 +250,37 @@ public class LoadTest {
 		return null;
     }
     
+
+    private static String Streams2JavaScriptText(HashMap<String, Vector<TesslaEvent>> streams2) {    
+    	String res = "tesslaVisualizer.visualizer(container, {\r\n" + 
+    			"        streams: [";
+        // Iterating HashMap through for loop  	
+         /*{
+            style: "dots",
+            name: "hans",
+            data: [{time: 5, value: 6}, {time: 10, value: 10}, {time: 17, value: 20}],
+          }, */
+        Set<String> streamNames = streams2.keySet();
+        for (String name: streamNames) {
+        	Vector<TesslaEvent> value = streams2.get(name);
+        	res = res + "{\nstyle: \"dots\",\nname: \"" + name + "\",\ndata:" + timeEvents(value) + "},\n";
+        }
+        
+		return res + "] });";
+    }
+    
+    private static String timeEvents(Vector<TesslaEvent> value) {
+    	// [{time: 5, value: 6}, {time: 10, value: 10}, {time: 17, value: 20}]
+    	String res = "[";
+    	for (int i = 0; i < value.size(); i++) {
+    		String timestamp = value.get(i).time.toString();
+    		String val = value.get(i).value.toString();
+    		res = res + "{time: " + timestamp + ", value: " + val +"},";
+    	}
+    	res = res + "]";
+    	return res;
+    }
+    
 	private String invokeJavascriptTessla() throws NoSuchMethodException, ScriptException, IOException, URISyntaxException {
 		ScriptEngineManager manager = new ScriptEngineManager();
 		ScriptEngine engine = manager.getEngineByName("JavaScript");
@@ -243,22 +299,6 @@ public class LoadTest {
 	    
 		// get Runnable interface object from engine. This interface methods
 	    // are implemented by script functions with the matching name.
-	    /* final TesslaStream  ts = inv.getInterface(TesslaStream.class);
-	    final TesslaEvent  te = inv.getInterface(TesslaEvent.class);
-	    
-	    TesslaStream[] json_streams;
-	    Enumeration<String> k = streams.keys();
-
-	    int i = 0;
-	    while (k.hasMoreElements()) {
-	    	ts.name = k.nextElement();
-	    	ts.data = streams.get(ts.name);
-	    	//json_streams.add(ts);
-	    	json_streams[i] = ts;
-	    	i++;
-	    }*/
-	    
-	    final TesslaEvent  te = inv.getInterface(TesslaEvent.class);
 	    
 	    Vector<TesslaStream> json_streams = new Vector<TesslaStream>(streams.size());
 	    Set<String> k = streams.keySet();
@@ -308,7 +348,7 @@ public class LoadTest {
 
 		System.out.println("Compiling...");
 				
-		Engine res = JavaApi.compile(spec_str, "spec.tessla").engine();
+		res = JavaApi.compile(spec_str, "spec.tessla").engine();
 
 		/*System.out.println("Element list!");
 		Iterator<String> peNames = scala.collection.JavaConverters.asJava(res.productElementNames());
@@ -345,13 +385,16 @@ public class LoadTest {
 		}); */
 		
         streams = new HashMap<String, Vector<TesslaEvent>>();
-		EngineListener eng_listener = new EngineListener() {
+		eng_listener = new EngineListener() {
 			public void event(String stream, scala.math.BigInt time, Object value) {
-				//System.out.println("Got: " + stream + " = " + value + " at " + time);
+				System.out.println("Got: " + stream + " = " + value + " at " + time);
 				TesslaEvent te = new TesslaEvent();
 				te.time = time;
 				te.value = (Number) value;
 				Vector<TesslaEvent> t_stream = streams.get(stream);
+				if (t_stream == null) {
+					t_stream = new Vector<TesslaEvent>();
+				}
 				t_stream.add(te);
 				streams.put(stream, t_stream);
 			}
