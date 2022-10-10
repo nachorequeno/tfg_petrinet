@@ -1,20 +1,14 @@
 package cpn.tracing;
 
-import static j2html.TagCreator.attrs;
 import static j2html.TagCreator.body;
 import static j2html.TagCreator.h1;
 import static j2html.TagCreator.head;
 import static j2html.TagCreator.html;
 import static j2html.TagCreator.link;
-import static j2html.TagCreator.img;
-import static j2html.TagCreator.main;
 import static j2html.TagCreator.script;
 import static j2html.TagCreator.title;
-
 import j2html.tags.ContainerTag;
-import j2html.tags.attributes.IContent;
 import j2html.tags.specialized.HtmlTag;
-import jdk.javadoc.internal.doclets.formats.html.markup.Script;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -23,14 +17,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.Vector;
 
@@ -40,7 +29,6 @@ import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.swing.JFileChooser;
-import org.graalvm.polyglot.*;
 
 import org.cpntools.accesscpn.engine.highlevel.HighLevelSimulator;
 import org.cpntools.accesscpn.engine.highlevel.InstancePrinter;
@@ -62,7 +50,6 @@ import de.uni_luebeck.isp.tessla.interpreter.StreamEngine.Stream;
 
 import scala.Tuple3;
 import scala.collection.immutable.Map;
-import scala.tools.nsc.doc.html.HtmlTags.Svg;
 import scala.Option;
 
 class TesslaEvent {
@@ -97,8 +84,8 @@ public class LoadTestHtml {
 			//ld.printFactories();
 			//streams.put("hola", new Vector<TesslaEvent>(10));
 			//String string_streams = ld.invokeJavascriptTesslaGraal();
-			//String string_streams = ld.Streams2JavaScriptText(streams);
-			String string_streams = Streams2JavaScriptText(streams);
+			//String string_streams = ld.Streams2Text(streams);
+			String string_streams = Streams2Text(streams);
 			HtmlTag out = toHTML("Hola!", string_streams);
 			System.out.println(out.renderFormatted());
 		}
@@ -251,7 +238,7 @@ public class LoadTestHtml {
     }
     
 
-    private static String Streams2JavaScriptText(HashMap<String, Vector<TesslaEvent>> streams2) {    
+    private static String Streams2Text(HashMap<String, Vector<TesslaEvent>> streams2) {    
     	String res = "tesslaVisualizer.visualizer(container, {\r\n" + 
     			"        streams: [";
         // Iterating HashMap through for loop  	
@@ -263,13 +250,13 @@ public class LoadTestHtml {
         Set<String> streamNames = streams2.keySet();
         for (String name: streamNames) {
         	Vector<TesslaEvent> value = streams2.get(name);
-        	res = res + "{\nstyle: \"dots\",\nname: \"" + name + "\",\ndata:" + timeEvents(value) + "},\n";
+        	res = res + "{\nstyle: \"dots\",\nname: \"" + name + "\",\ndata:" + TimeEvents2Text(value) + "},\n";
         }
         
 		return res + "] });";
     }
     
-    private static String timeEvents(Vector<TesslaEvent> value) {
+    private static String TimeEvents2Text(Vector<TesslaEvent> value) {
     	// [{time: 5, value: 6}, {time: 10, value: 10}, {time: 17, value: 20}]
     	String res = "[";
     	for (int i = 0; i < value.size(); i++) {
@@ -313,44 +300,13 @@ public class LoadTestHtml {
 	    }
 	    
 		// call function from script file
-		// String res = (String) inv.invokeFunction("tesslaVisualizer.visualizer", container, json_streams);
         Object res = inv.invokeMethod(tesslaVisualizer, "visualizer", container, json_streams);
 	    
-		/* tesslaVisualizer.visualizer(container, {
-        streams: [
-          {
-            style: "dots",
-            name: "hans",
-            data: [{time: 5, value: 6}, {time: 10, value: 10}, {time: 17, value: 20}],
-          },
-          {
-            style: "graph",
-            name: "gunter",
-            data: [{time: 8, value: 3}, {time: 10, value: -2}, {time: 21, value: 7}, {time: 29.7, value: 5}],
-          },
-          {
-            name: "fritz",
-            style: "signal",
-            data: [{time: 0, value: 0}, {time: 3, value: 10}, {time: 17, value: "fritz", color: "red"}, {time: 21, value: 7}, {time: 25, value: 17}]
-          },
-        ]
-      	}); */
 		return res.toString();
 	}
 	
-	private static Engine generateTesslaEngine() {
-
-		String spec_str = "in e1: Events[Unit]\r\n" + "in e2: Events[Unit]\r\n" + "in t1: Events[Unit]\r\n"
-				+ "in t2: Events[Unit]\r\n" + "\r\n"
-				+ "def eating_time_f1 = on(e1, default(time(e1) - time(t1), 0))\r\n"
-				+ "def eating_time_f2 = on(e2, default(time(e2) - time(t2), 0))\r\n" + "\r\n" + "out eating_time_f1\r\n"
-				+ "out eating_time_f2";
-
-		System.out.println("Compiling...");
-				
-		res = JavaApi.compile(spec_str, "spec.tessla").engine();
-
-		/*System.out.println("Element list!");
+	private static void specIterator() {
+		System.out.println("Element list!");
 		Iterator<String> peNames = scala.collection.JavaConverters.asJava(res.productElementNames());
 		while (peNames.hasNext()){
 			String elemName = peNames.next();
@@ -369,20 +325,22 @@ public class LoadTestHtml {
 			//System.out.println("outStream: " + t._1().getClass().getName().toString());
 			Option<String> name = (Option<String>) t._1();
 			System.out.println("os name: " + name.get());
-		}*/
-		
+		}
+	}
+	
+	private static Engine generateTesslaEngine() {
+
+		String spec_str = "in e1: Events[Unit]\r\n" + "in e2: Events[Unit]\r\n" + "in t1: Events[Unit]\r\n"
+				+ "in t2: Events[Unit]\r\n" + "\r\n"
+				+ "def eating_time_f1 = on(e1, default(time(e1) - time(t1), 0))\r\n"
+				+ "def eating_time_f2 = on(e2, default(time(e2) - time(t2), 0))\r\n" + "\r\n" + "out eating_time_f1\r\n"
+				+ "out eating_time_f2";
+
+		System.out.println("Compiling...");
+				
+		res = JavaApi.compile(spec_str, "spec.tessla").engine();		
 		
 		System.out.println("Ready!");
-
-		/* res.addListener(new EngineListener() {
-			public void event(String stream, scala.math.BigInt time, Object value) {
-				System.out.println("Got: " + stream + " = " + value + " at " + time);
-			}
-
-			public void printEvent(scala.math.BigInt time, Object value) {
-
-			}
-		}); */
 		
         streams = new HashMap<String, Vector<TesslaEvent>>();
 		eng_listener = new EngineListener() {
