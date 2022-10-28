@@ -1,8 +1,12 @@
 package cpn.tracing;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.Vector;
 
 import javax.swing.JFileChooser;
 
@@ -19,17 +23,35 @@ import de.uni_luebeck.isp.tessla.interpreter.JavaApi;
 import de.uni_luebeck.isp.tessla.interpreter.JavaApi.Engine;
 import de.uni_luebeck.isp.tessla.interpreter.JavaApi.EngineListener;
 
+class TesslaEvent2{
+    String stream;
+    int time;
+    Object value;
+    
+    public String toString() {
+    	return "{" + stream + ", " + Integer.valueOf(time).toString() + ", " + value.toString() + "}";
+    }
+    
+    public boolean equals(TesslaEvent2 te2) {
+		return stream.equals(te2) && te2.time == time && te2.value.equals(value);
+    }
+}
+
+class TesslaStream2 {
+    String color;
+    Vector<TesslaEvent2> data;
+    Boolean editable;
+    String name;
+    String style; /* "signal" | "dots" | "graph" | "slim graph" | "plot" | "slim plot" | "events" | "unit events" | "bubbles" */
+    Object text; /* ((e: TesslaEvent) => string) | null; */
+}
+
 public class LoadTest {
 
 	/**
 	 * @param args
 	 * @throws Exception
 	 */
-
-	private final static List<String> events = Arrays.asList("e1", "e2");
-	private final static List<String> status = Arrays.asList("t1", "t2");
-	
-	private static int maxTimeStamp = 0;
 
 	public static void main(final String[] args) throws Exception {
 		final JFileChooser chooser = new JFileChooser();
@@ -58,14 +80,19 @@ public class LoadTest {
 			System.out.println("Done");
 
 			Engine res = generateTesslaEngine();
+	        Hashtable<String, Vector<TesslaEvent2>> inputStreams = new Hashtable<String, Vector<TesslaEvent2>>();
 
 			for (int i = 1; i <= 50; i++) {
-
-				s.execute(i);
+				System.out.println("Simulation step: " + s.getStep().toString() + ", time: " + s.getTime());
+				s.execute();
 				List<Marking> list = s.getMarking().getAllMarkings();
-				executeTessla(list, res);
+				System.out.println("New markings: " + list.toString());
+				populate(list, inputStreams);
 			}
+			System.out.println("inputStreams: " + inputStreams.toString());
 
+			executeTessla(inputStreams, res);
+			
 			res.step();
 
 		} finally {
@@ -99,15 +126,61 @@ public class LoadTest {
 		return res;
 	}
 
-	private static void executeTessla(List<Marking> list, Engine res) {
+	private static void executeTessla(Hashtable<String, Vector<TesslaEvent2>> inputStreams, Engine res) {
 
+		List<TesslaEvent2> tempList = new ArrayList<TesslaEvent2>();
+
+	    Set<String> k = inputStreams.keySet();
+	    Iterator<String> it = k.iterator();
+	    while (it.hasNext()) {
+	    	String streamName = it.next();
+	    	Vector<TesslaEvent2> oneStream = inputStreams.get(streamName);
+	    	tempList.addAll(oneStream);
+	    }
+
+	    tempList.sort((te1, te2) -> te1.time - te2.time);
+	    Iterator<TesslaEvent2> it2 = tempList.iterator();
+    	while (it2.hasNext()) {
+    		TesslaEvent2 te = it2.next();
+    		res.provide(te.stream);
+    		res.setTime(te.time);
+			System.out.println("Got: " + te.stream + " = " + te.value.toString() + " at " + Integer.valueOf(te.time).toString());
+    	}
+
+	}
+
+	private static void populate(List<Marking> list, Hashtable<String, Vector<TesslaEvent2>> inputStreams) {
 		for (Marking marking : list) {
+			//System.out.println("Marking: " + marking.toString());
+
 			if (marking.getTokenCount() > 0 && marking.getMarking().split("@").length > 1) {
-				int timestamp = Integer.valueOf(marking.getMarking().split("@")[1]) ;
-				if (timestamp >= maxTimeStamp) {
-					res.provide(marking.getPlaceInstance().getNode().getName().getText());
-					res.setTime(Integer.valueOf(timestamp));
-					maxTimeStamp = timestamp;
+
+				String stream = marking.getPlaceInstance().getNode().getName().getText();
+				//System.out.println("Stream name: " + stream);
+				
+				Vector<TesslaEvent2> t_stream = inputStreams.get(stream);
+				TesslaEvent2 lastTe;
+				if (t_stream == null) {
+					t_stream = new Vector<TesslaEvent2>();
+					lastTe = new TesslaEvent2();
+					lastTe.time = 0;
+					lastTe.value = null;
+					lastTe.stream = null;
+				} else {
+					lastTe = t_stream.lastElement();
+				}
+
+				//System.out.println("last Tessla Event: " + lastTe.toString());
+
+				TesslaEvent2 te = new TesslaEvent2();
+				te.stream = stream;
+				te.time =  Integer.valueOf(marking.getMarking().split("@")[1]);
+				te.value = marking.getMarking().split("@")[0];
+				if ((te.time > lastTe.time) && (te.value != lastTe.value)) {
+					//System.out.println("Adding Tessla Event: " + te.toString());
+					t_stream.add(te);
+					inputStreams.put(stream, t_stream);
+					//System.out.println("Updated stream: " + inputStreams.toString());
 				}
 			}
 		}
