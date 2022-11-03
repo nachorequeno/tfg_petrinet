@@ -82,7 +82,7 @@ public class LoadTest {
 			Engine res = generateTesslaEngine();
 	        Hashtable<String, Vector<TesslaEvent2>> inputStreams = new Hashtable<String, Vector<TesslaEvent2>>();
 
-			for (int i = 1; i <= 50; i++) {
+			for (int i = 1; i <= 5000; i++) {
 				System.out.println("Simulation step: " + s.getStep().toString() + ", time: " + s.getTime());
 				s.execute();
 				List<Marking> list = s.getMarking().getAllMarkings();
@@ -146,7 +146,6 @@ public class LoadTest {
     		res.setTime(te.time);
 			System.out.println("Got: " + te.stream + " = " + te.value.toString() + " at " + Integer.valueOf(te.time).toString());
     	}
-
 	}
 
 	private static void populate(List<Marking> list, Hashtable<String, Vector<TesslaEvent2>> inputStreams) {
