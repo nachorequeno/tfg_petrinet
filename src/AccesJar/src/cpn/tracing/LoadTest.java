@@ -142,8 +142,8 @@ public class LoadTest {
 	    Iterator<TesslaEvent2> it2 = tempList.iterator();
     	while (it2.hasNext()) {
     		TesslaEvent2 te = it2.next();
-    		res.provide(te.stream);
     		res.setTime(te.time);
+    		res.provide(te.stream);
 			System.out.println("Got: " + te.stream + " = " + te.value.toString() + " at " + Integer.valueOf(te.time).toString());
     	}
 	}
