@@ -9,6 +9,7 @@ import static j2html.TagCreator.script;
 import static j2html.TagCreator.title;
 import j2html.tags.ContainerTag;
 import j2html.tags.specialized.HtmlTag;
+import cpn.tracing.Event;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,11 +19,12 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
-
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
@@ -31,11 +33,9 @@ import javax.script.ScriptException;
 import javax.swing.JFileChooser;
 
 import org.cpntools.accesscpn.engine.highlevel.HighLevelSimulator;
-import org.cpntools.accesscpn.engine.highlevel.InstancePrinter;
 import org.cpntools.accesscpn.engine.highlevel.checker.Checker;
 import org.cpntools.accesscpn.engine.highlevel.checker.ErrorInitializingSMLInterface;
 import org.cpntools.accesscpn.engine.highlevel.instance.Marking;
-import org.cpntools.accesscpn.model.ModelPrinter;
 import org.cpntools.accesscpn.model.PetriNet;
 import org.cpntools.accesscpn.model.importer.DOMParser;
 import org.graalvm.polyglot.Context;
@@ -69,17 +69,16 @@ class TesslaStream {
 
 public class LoadTestHtml {
 
-	private static int maxTimeStamp = 0;
-
     static HashMap<String, Vector<TesslaEvent>> streams = new HashMap<String, Vector<TesslaEvent>>();
     static EngineListener eng_listener = null;
-	static Engine res;
+    static Engine res;
 
 	public static void main(final String[] args) throws Exception {
 		final JFileChooser chooser = new JFileChooser();
 		if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-			List<Marking> list = simulate(chooser.getSelectedFile());
-			//callTessla(list);
+			Hashtable<String, Vector<Event>> res_sim = simulate(chooser.getSelectedFile(), 500);
+			Engine eng = generateTesslaEngine();
+			executeTessla(res_sim, eng);		
 			//LoadTestHtml ld = new LoadTestHtml();
 			//ld.printFactories();
 			//streams.put("hola", new Vector<TesslaEvent>(10));
@@ -92,83 +91,49 @@ public class LoadTestHtml {
 
 	}
 
-/*	private static void load(final File selectedFile) throws Exception {
-		final PetriNet petriNet = DOMParser.parse(selectedFile.toURI().toURL());
-		System.out.println(ModelPrinter.printModel(petriNet));
-		System.out.println("=======================================================");
-		System.out.println(InstancePrinter.printModel(petriNet));
-		System.out.println("=======================================================");
-		System.out.println(InstancePrinter.printMonitors(petriNet));
-		final HighLevelSimulator s = HighLevelSimulator.getHighLevelSimulator();
+	public static Hashtable<String, Vector<Event>> simulate(File file, int amount) throws Exception {	
+		System.out.println("[pnpl] Simulation launching");
+        Hashtable<String, Vector<Event>> streams = new Hashtable<String, Vector<Event>>();
+
 		try {
-			s.setSimulationReportOptions(true, false, "");
-			final Checker checker = new Checker(petriNet, selectedFile, s);
-			try {
-				checker.checkEntireModel(selectedFile.getParent(), selectedFile.getParent());
-			} catch (final ErrorInitializingSMLInterface e) {
-				// Ignore
+			final HighLevelSimulator simulator = load(file);
+			List<Marking> allMarkings = simulator.getMarking().getAllMarkings();
+			System.out.println("[pnpl] Initial state: " + simulator.getStep().toString() + ", time: " + simulator.getTime()); 
+			populate(allMarkings, streams);
+			for (int i = 0; i < amount; i++) {
+				simulator.execute();
+				allMarkings = simulator.getMarking().getAllMarkings();
+				System.out.println("[pnpl] Simulation step: " + simulator.getStep().toString() + ", time: " + simulator.getTime()); 
+				populate(allMarkings, streams);
 			}
-			System.out.println("Done");
-
-			Engine res = generateTesslaEngine();
-
-			for (int i = 1; i <= 50; i++) {
-
-				s.execute(i);
-				List<Marking> list = s.getMarking().getAllMarkings();
-				executeTessla(list, res);
-			}
-
-			res.step();
-
-		} finally {
-			s.destroy();
+		} catch (final Exception e) {
+			e.printStackTrace();
 		}
-	}*/
-
-	private static List<Marking> simulate(final File selectedFile) throws Exception {
-		final PetriNet petriNet = DOMParser.parse(selectedFile.toURI().toURL());
-		System.out.println(ModelPrinter.printModel(petriNet));
-		System.out.println("=======================================================");
-		System.out.println(InstancePrinter.printModel(petriNet));
-		System.out.println("=======================================================");
-		System.out.println(InstancePrinter.printMonitors(petriNet));
-		final HighLevelSimulator s = HighLevelSimulator.getHighLevelSimulator();
-		try {
-			s.setSimulationReportOptions(true, false, "");
-			final Checker checker = new Checker(petriNet, selectedFile, s);
-			try {
-				checker.checkEntireModel(selectedFile.getParent(), selectedFile.getParent());
-			} catch (final ErrorInitializingSMLInterface e) {
-				// Ignore
-			}
-			System.out.println("Done");
-
-			/* s.execute(50);
-			List<Marking> list = s.getMarking().getAllMarkings(); */
-			Engine res = generateTesslaEngine();
-
-			List<Marking> list = null;
-			for (int i = 1; i <= 50; i++) {
-
-				s.execute(i);
-				list = s.getMarking().getAllMarkings();
-				executeTessla(list, res);
-			}
-
-			res.step();
-			
-			return list;
-
-		} finally {
-			s.destroy();
-		}
+		System.out.println("[pnpl] Simulation ended");
+		return streams;
 	}
-	
-	private static void callTessla(List<Marking> list) throws Exception {
-		res = generateTesslaEngine();
-		executeTessla(list, res);
-		res.step();
+
+	private static HighLevelSimulator load(final File file) throws Exception {
+
+		System.out.println("[pnpl] Getting petri net from file...");
+		final PetriNet petriNet = DOMParser.parse(file.toURI().toURL());
+
+		System.out.println("[pnpl] Creating simulator instance...");
+
+		//Simulator instance
+		final HighLevelSimulator simulator = HighLevelSimulator.getHighLevelSimulator();
+
+		simulator.setSimulationReportOptions(false, false, "");
+
+		final Checker checker = new Checker(petriNet, file, simulator);
+
+		try {
+			checker.checkEntireModel(file.getParent(), file.getParent());
+		} catch (final ErrorInitializingSMLInterface e) {
+			// Ignore
+		}
+		System.out.println("[pnpl] Simulator created");
+		return simulator;
 	}
 
 	public static HtmlTag toHTML(String title, String string_streams) throws NoSuchMethodException, ScriptException, IOException, URISyntaxException {
@@ -338,7 +303,7 @@ public class LoadTestHtml {
 
 		System.out.println("Compiling...");
 				
-		res = JavaApi.compile(spec_str, "spec.tessla").engine();		
+		Engine res = JavaApi.compile(spec_str, "spec.tessla").engine();
 		
 		System.out.println("Ready!");
 		
@@ -367,15 +332,52 @@ public class LoadTestHtml {
 		return res;
 	}
 
-	private static void executeTessla(List<Marking> list, Engine res) {
+private static void executeTessla(Hashtable<String, Vector<Event>> inputStreams, Engine res) {
 
-		for (Marking marking : list) {
+		List<Event> tempList = new ArrayList<Event>();
+
+	    Set<String> k = inputStreams.keySet();
+	    Iterator<String> it = k.iterator();
+	    while (it.hasNext()) {
+	    	String streamName = it.next();
+	    	Vector<Event> oneStream = inputStreams.get(streamName);
+	    	tempList.addAll(oneStream);
+	    }
+
+	    tempList.sort((te1, te2) -> te1.getTime() - te2.getTime());
+	    Iterator<Event> it2 = tempList.iterator();
+    	while (it2.hasNext()) {
+    		Event te = it2.next();
+			System.out.println("Inserting: " + te.getStream() + " = " + te.getValue().toString() + " at " + Integer.valueOf(te.getTime()).toString());
+			res.setTime(te.getTime());
+			res.provide(te.getStream());
+    	}
+	}
+
+	private static void populate(List<Marking> allMarkings, Hashtable<String, Vector<Event>> inputStreams) {
+		System.out.println("[pnpl] allMarkings " + allMarkings.toString());
+		for (Marking marking : allMarkings) {
 			if (marking.getTokenCount() > 0 && marking.getMarking().split("@").length > 1) {
-				int timestamp = Integer.valueOf(marking.getMarking().split("@")[1]) ;
-				if (timestamp >= maxTimeStamp) {
-					res.provide(marking.getPlaceInstance().getNode().getName().getText());
-					res.setTime(Integer.valueOf(timestamp));
-					maxTimeStamp = timestamp;
+				
+				String stream = marking.getPlaceInstance().getNode().getName().getText();
+				
+				Vector<Event> t_stream = inputStreams.get(stream);
+				Event lastTe;
+				if (t_stream == null) {
+					t_stream = new Vector<Event>();
+					lastTe = new Event();
+				} else {
+					lastTe = t_stream.lastElement();
+				}
+
+				Event te = new Event();
+				te.setStream(stream);
+				te.setTime(Integer.valueOf(marking.getMarking().split("@")[1]));
+				te.setValue(marking.getMarking().split("@")[0]);
+				if ((te.getTime() > lastTe.getTime()) && (te.getValue() != lastTe.getValue())) {
+					t_stream.add(te);
+					inputStreams.put(stream, t_stream);
+					System.out.println("[pnpl] event: " + te.toString());
 				}
 			}
 		}
