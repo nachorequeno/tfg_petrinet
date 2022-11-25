@@ -4,6 +4,8 @@ in t1: Events[Unit]
 in t2: Events[Unit]
 
 def eating_time_f1 = on(e1, default(time(e1) - time(t1), 0))
+def eating_time_f1 = on(t1, default(time(t1) - last(time(e1), t1), 0))
 def eating_time_f2 = on(e2, default(time(e2) - time(t2), 0))
+def eating_time_f2 = on(t2, default(time(t2) - last(time(e2), t2), 0))
 out eating_time_f1
 out eating_time_f2
